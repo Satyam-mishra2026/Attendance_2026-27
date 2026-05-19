@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Register</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+        body { background: linear-gradient(135deg, #141e30, #243b55); min-height: 100vh; padding: 15px; color: #fff; }
+        .register-card { background: rgba(255, 255, 255, 0.06); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; max-width: 600px; margin: 0 auto; padding: 20px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); }
+        h2 { text-align: center; margin-bottom: 20px; font-weight: 600; }
+        .date-section { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.05); padding: 10px 15px; border-radius: 10px; }
+        .date-section input[type="date"] { background: #00adb5; border: none; color: white; padding: 8px 12px; border-radius: 5px; font-size: 16px; font-weight: bold; outline: none; }
+        .attendance-table { width: 100%; margin-bottom: 20px; }
+        .row { display: flex; justify-content: space-between; align-items: center; padding: 12px 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .name-column { font-size: 16px; font-weight: 500; flex: 1; }
+        .options-column { display: flex; gap: 10px; }
+        .radio-label { display: inline-block; cursor: pointer; }
+        .radio-label input[type="radio"] { display: none; }
+        .btn-status { display: inline-block; width: 40px; height: 40px; line-height: 40px; text-align: center; border-radius: 8px; background: rgba(255, 255, 255, 0.1); font-weight: bold; font-size: 14px; transition: 0.2s; border: 1px solid rgba(255, 255, 255, 0.1); }
+        input[type="radio"][value="P"]:checked + .btn-status { background: #2ecc71; color: #fff; box-shadow: 0 0 10px rgba(46, 204, 113, 0.5); }
+        input[type="radio"][value="A"]:checked + .btn-status { background: #e74c3c; color: #fff; box-shadow: 0 0 10px rgba(231, 76, 60, 0.5); }
+        input[type="radio"][value="L"]:checked + .btn-status { background: #f1c40f; color: #000; box-shadow: 0 0 10px rgba(241, 196, 15, 0.5); }
+        .submit-btn { width: 100%; padding: 15px; background: #00adb5; border: none; border-radius: 10px; color: white; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 173, 181, 0.4); transition: 0.2s; }
+        .submit-btn:disabled { background: #555; cursor: not-allowed; }
+        .alert-box { display: none; text-align: center; margin-top: 15px; padding: 10px; border-radius: 8px; font-weight: bold; }
+        .success { background: rgba(46, 204, 113, 0.2); color: #2ecc71; border: 1px solid #2ecc71; }
+        .error { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid #e74c3c; }
+    </style>
+</head>
+<body>
+
+<div class="register-card">
+    <h2>Attendance Register</h2>
+    
+    <div class="date-section">
+        <label style="font-size: 16px;">Date:</label>
+        <input type="date" id="attendanceDate">
+    </div>
+
+    <form id="registerForm">
+        <div class="attendance-table" id="staffList"></div>
+        <button type="submit" id="saveBtn" class="submit-btn">Save Attendance</button>
+        <div id="alert" class="alert-box"></div>
+    </form>
+</div>
+
+<script>
+    // 1. APNE STAFF KE NAAM YAHAN EDIT KAREIN
+    const staffMembers = [
+        "Satyam Mishra",
+        "Amit Sharma",
+        "Rahul Kumar",
+        "Priya Singh",
+        "Vikas Yadav"
+    ];
+
+    // APNA DEPLOYED WEB APP URL YAHAN PASTE KAREIN
+    const scriptURL = 'YOUR_GOOGLE_WEB_APP_URL_HERE';
+
+    document.getElementById('attendanceDate').valueAsDate = new Date();
+    const listContainer = document.getElementById('staffList');
+    
+    staffMembers.forEach((name, index) => {
+        const row = document.createElement('div');
+        row.className = 'row';
+        row.innerHTML = `
+            <div class="name-column">${name}</div>
+            <div class="options-column">
+                <label class="radio-label"><input type="radio" name="status_${index}" value="P" checked><span class="btn-status">P</span></label>
+                <label class="radio-label"><input type="radio" name="status_${index}" value="A"><span class="btn-status">A</span></label>
+                <label class="radio-label"><input type="radio" name="status_${index}" value="L"><span class="btn-status">L</span></label>
+            </div>
+        `;
+        listContainer.appendChild(row);
+    });
+
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const saveBtn = document.getElementById('saveBtn');
+        const alertBox = document.getElementById('alert');
+        const selectedDate = document.getElementById('attendanceDate').value;
+        
+        saveBtn.disabled = true;
+        saveBtn.textContent = "Saving to Sheet...";
+        
+        let finalData = [];
+        staffMembers.forEach((name, index) => {
+            const status = document.querySelector(`input[name="status_${index}"]:checked`).value;
+            finalData.push({ date: selectedDate, name: name, status: status });
+        });
+
+        // Google Sheet me data bhejna
+        fetch(scriptURL, {
+            method: 'POST',
+            mode: 'no-cors',
+            cache: 'no-cache',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(finalData)
+        })
+        .then(() => {
+            alertBox.textContent = "✓ Data Successfully Saved to Google Sheet!";
+            alertBox.className = "alert-box success";
+            alertBox.style.display = 'block';
+            saveBtn.disabled = false;
+            saveBtn.textContent = "Save Attendance";
+            setTimeout(() => { alertBox.style.display = 'none'; }, 3000);
+        })
+        .catch(error => {
+            alertBox.textContent = "❌ Error: Could not save data.";
+            alertBox.className = "alert-box error";
+            alertBox.style.display = 'block';
+            saveBtn.disabled = false;
+            saveBtn.textContent = "Save Attendance";
+            console.error('Error!', error.message);
+        });
+    });
+</script>
+</body>
+</html>
