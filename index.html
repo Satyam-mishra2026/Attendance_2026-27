@@ -15,7 +15,7 @@
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            overflow-x: hidden;
+            overflow: hidden; /* Poora page scroll hone se rokne ke liye */
         }
         
         /* Login Card Wrapper */
@@ -63,16 +63,30 @@
         .login-btn:hover { background: #008c95; transform: translateY(-1px); }
         .login-error { color: #e74c3c; font-size: 14px; margin-top: 15px; display: none; font-weight: bold; }
 
-        /* Register Card Style */
-        .register-card { display: none; background: rgba(255, 255, 255, 0.06); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; width: 100%; max-width: 600px; padding: 25px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); animation: fadeIn 0.5s ease-in-out; }
+        /* Register Card Style (Height and Flex Fix) */
+        .register-card { 
+            display: none; 
+            background: rgba(255, 255, 255, 0.06); 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 15px; 
+            width: 100%; 
+            max-width: 600px; 
+            height: 88vh; /* Screen ke size ke hisab se box locked */
+            padding: 25px; 
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); 
+            animation: fadeIn 0.5s ease-in-out; 
+            flex-direction: column;
+        }
         
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.95); }
             to { opacity: 1; transform: scale(1); }
         }
 
-        /* Header Designs (Logo & Batch) */
-        .portal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid rgba(255, 255, 255, 0.1); }
+        /* Header Designs (Logo & Batch - FIXED AT TOP) */
+        .portal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 2px solid rgba(255, 255, 255, 0.1); flex-shrink: 0; }
         .logo-box { background: linear-gradient(45deg, #00adb5, #007a80); padding: 8px 15px; border-radius: 8px; font-weight: bold; font-size: 18px; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(0, 173, 181, 0.3); text-transform: uppercase; }
         .batch-badge { background: linear-gradient(45deg, #f1c40f, #f39c12); color: #000; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 14px; box-shadow: 0 4px 10px rgba(241, 196, 15, 0.3); text-transform: uppercase; animation: pulse 2s infinite; }
         
@@ -82,11 +96,32 @@
             100% { transform: scale(1); }
         }
 
-        h2 { text-align: center; margin-bottom: 20px; font-weight: 500; font-size: 22px; color: #eee; }
-        .date-section { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.05); padding: 10px 15px; border-radius: 10px; }
+        h2 { text-align: center; margin-bottom: 15px; font-weight: 500; font-size: 22px; color: #eee; flex-shrink: 0; }
+        .date-section { margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.05); padding: 10px 15px; border-radius: 10px; flex-shrink: 0; }
         .date-section input[type="date"] { background: #00adb5; border: none; color: white; padding: 8px 12px; border-radius: 5px; font-size: 16px; font-weight: bold; outline: none; }
         
-        .attendance-table { width: 100%; margin-bottom: 20px; }
+        /* Form Layout Setup */
+        #registerForm {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden; /* Naamon ke alawa baki cheez freeze rahegi */
+        }
+
+        /* Attendance Table Scrolling Config */
+        .attendance-table { 
+            width: 100%; 
+            margin-bottom: 15px; 
+            flex: 1;
+            overflow-y: auto; /* Sirf student list scroll hogi */
+            padding-right: 5px;
+        }
+
+        /* Custom Scrollbar for modern look */
+        .attendance-table::-webkit-scrollbar { width: 6px; }
+        .attendance-table::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); border-radius: 10px; }
+        .attendance-table::-webkit-scrollbar-thumb { background: rgba(0, 173, 181, 0.4); border-radius: 10px; }
+
         .row { display: flex; justify-content: space-between; align-items: center; padding: 12px 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); transition: 0.2s; }
         .row:hover { background: rgba(255, 255, 255, 0.02); border-radius: 8px; }
         .name-column { font-size: 16px; font-weight: 500; flex: 1; }
@@ -99,6 +134,8 @@
         input[type="radio"][value="A"]:checked + .btn-status { background: #e74c3c; color: #fff; box-shadow: 0 0 10px rgba(231, 76, 60, 0.5); }
         input[type="radio"][value="L"]:checked + .btn-status { background: #f1c40f; color: #000; box-shadow: 0 0 10px rgba(241, 196, 15, 0.5); }
         
+        /* Footer and Save Button Fix */
+        .footer-controls { flex-shrink: 0; background: transparent; padding-top: 5px; }
         .submit-btn { width: 100%; padding: 15px; background: #00adb5; border: none; border-radius: 10px; color: white; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 173, 181, 0.4); transition: 0.2s; }
         .submit-btn:disabled { background: #555; cursor: not-allowed; }
         .alert-box { display: none; text-align: center; margin-top: 15px; padding: 10px; border-radius: 8px; font-weight: bold; }
@@ -108,7 +145,7 @@
         /* Beautiful Footer Design */
         .credit-footer { 
             text-align: center; 
-            margin-top: 20px; 
+            margin-top: 15px; 
             font-size: 13px; 
             color: rgba(255, 255, 255, 0.4); 
             letter-spacing: 1px;
@@ -164,10 +201,12 @@
 
     <form id="registerForm">
         <div class="attendance-table" id="staffList"></div>
-        <button type="submit" id="saveBtn" class="submit-btn">Save Attendance</button>
-        <div id="alert" class="alert-box"></div>
         
-       <div class="credit-footer">Powered by <span>Veda Institute</span> <span>@ Satyam Mishra</span></div>
+        <div class="footer-controls">
+            <button type="submit" id="saveBtn" class="submit-btn">Save Attendance</button>
+            <div id="alert" class="alert-box"></div>
+            <div class="credit-footer">Powered by <span>Veda Institute</span> <span>@ Satyam Mishra</span></div>
+        </div>
     </form>
 </div>
 
@@ -175,9 +214,9 @@
     const adminUser = { username: "Satyam Mishra", password: "veda@admin" };
 
     const teacherUsers = [
-        { username: "satyam1", password: "veda@teacher1" },
-        { username: "satyam2", password: "veda@teacher2" },
-        { username: "satyam3", password: "veda@teacher3" }
+        { username: "teacher1", password: "veda@teacher1" },
+        { username: "teacher2", password: "veda@teacher2" },
+        { username: "teacher3", password: "veda@teacher3" }
     ];
 
     const staffMembers = [
@@ -189,14 +228,18 @@
         "Student 6",
         "Student 7",
         "Student 8",
-        "Student 9",
+        "Student 9",  
         "Student 10",
         "Student 11",
         "Student 12",
-        "Student 13"
+        "Student 13",
+        "Student 14",
+        "Student 15",
+        "Student 16",
+
     ];
 
-    // 🔗 APNA DEPLOYED WEB APP URL YAHAN PASTE KAREIN
+    // 🔗 APNA DEPLOYED WEB APP URL YAHAN PASTE KAREIN (LINE: 191)
     const scriptURL = 'https://script.google.com/macros/s/AKfycbx59-svXvmkUqgyB_YmugVZTerF4tZkQNL27iEASA8TgboLAOk-qg5HpG_p9TU5ZXvn/exec';
 
     function checkLogin() {
@@ -228,7 +271,7 @@
 
         if (loginSuccess) {
             document.getElementById('loginBox').style.display = 'none';
-            document.getElementById('attendanceBox').style.display = 'block';
+            document.getElementById('attendanceBox').style.display = 'flex'; // Changed to flex for proper layout
             loadAttendanceSystem();
         } else {
             errorMsg.textContent = "❌ Username, Password ya Role galat hai!";
